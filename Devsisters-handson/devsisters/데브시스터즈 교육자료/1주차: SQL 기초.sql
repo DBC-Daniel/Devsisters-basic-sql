@@ -414,10 +414,7 @@ and dept.deptno = emp.deptno
 -- 사번이 '7844'인 사원의 job 과 동일한 job 인 사원의 사번, 이름, job 을 출력!
 -- 메인 쿼리:  '서브쿼리'와 동일한 job을 가진 사원의 사번, 이름, job 을 출력
 -- 서브 쿼리: 사번이 '7844'인 사원의 job
-use megazone;
-select empno,ename,job
-from emp 
-where job in (select job from emp where empno='7844');
+
 
 -- COMMAND ----------
 
@@ -427,10 +424,7 @@ where job in (select job from emp where empno='7844');
 -- 서브: 사번이 '7521' 인 사원의 job   +    '7900' 인 사번의 급여보다 많은 급여
 
 
-select empno, ename, job, sal
-from emp
-where job in (select job from emp where empno='7521') and
-sal > (select sal from emp where empno='7900');
+
 
 -- COMMAND ----------
 
@@ -440,8 +434,6 @@ sal > (select sal from emp where empno='7900');
 -- 서브: 가장 적은 급여
 
 
-select empno, ename, sal from emp
-where sal in (select min(sal) from emp);
 -- where sal = (select min(sal) from emp);
 
 -- COMMAND ----------
@@ -450,10 +442,7 @@ where sal in (select min(sal) from emp);
 -- 부서별 최소 급여 중에서 30번 부서의 최소급여보다는 큰 최소급여인 부서의 부서번호, 최소 급여를 출력하라
 -- 메인: 부서번호, 최소 급여
 -- 서브: 부서별 최소 급여=having절, 30번 부서 최소급여 = 서브쿼리    
-select deptno,min(sal) --부서번호, 최소 급여
-from emp 
-group by deptno -- 부서별
-having min(sal)>(select min(sal) from emp where deptno='30'); 
+
 --부서별 최소 급여 > (30번 부서 최소 급여)
 
 -- COMMAND ----------
