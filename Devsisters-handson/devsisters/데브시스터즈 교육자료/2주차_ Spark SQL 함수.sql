@@ -19,10 +19,6 @@ select count(*) from megazone.emp;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC - select avg `(카운트할 컬럼)` from `테이블`
 -- MAGIC 
@@ -36,10 +32,6 @@ select round(avg(sal), 0) as `평균연봉` from megazone.emp;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC - select `max(카운트할 컬럼)` from `테이블`
 
@@ -47,10 +39,6 @@ select round(avg(sal), 0) as `평균연봉` from megazone.emp;
 
 -- DBTITLE 1,max(): 최대값
 select max(sal) as `최대연봉` from megazone.emp;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
@@ -64,10 +52,6 @@ select min(sal) as `최소연봉` from megazone.emp;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC - select `sum(카운트할 컬럼)` from `테이블`
 
@@ -75,10 +59,6 @@ select min(sal) as `최소연봉` from megazone.emp;
 
 -- DBTITLE 1,sum(): 합계
 select sum(sal) as `연봉합계` from megazone.emp;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
@@ -127,28 +107,26 @@ select * from temptable;
 
 -- DBTITLE 1,예제2) with절로 '총 연봉합이 많은 부서 순서로 정렬하자'
 -- 우선 총연봉합 테이블을 with 절로 구한다.
-select deptno, sum(sal)
+select deptno, sum(sal) as `총연봉합`
 from megazone.emp
-group by deptno;
+group by deptno
+order by `총연봉합` desc;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,예제2) CTE는 제일 아래행의 select문만 보면 된다. 해당 select문에 사용되는 테이블이 바로 with절에서 만든 테이블이다. (실존하지 않음)
 with SAMPLE (
-select deptno as dept, sum(sal) as total_Salary
+select deptno, sum(sal) as `총연봉합`
 from megazone.emp
 group by deptno
+order by `총연봉합` desc
 )
-select * from SAMPLE order by total_salary;
+select * from SAMPLE;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,예제2) 위에서 사용한 with절은 별도로 쿼리날리면 실패함.
--- select * from SAMPLE order by total_salary;
-
--- COMMAND ----------
-
-
+-- select * from SAMPLE;
 
 -- COMMAND ----------
 
@@ -220,10 +198,6 @@ JOIN department ON employee.deptno = department.deptno;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC ##### Outer Join
 -- MAGIC - 두 테이블에서 지정된 쪽인 Left 또는 Right 쪽의 모든 결과를 보여줍니다.
@@ -242,6 +216,12 @@ JOIN department ON employee.deptno = department.deptno;
 -- left join B테이블 b 
 -- on a.기준 컬럼 = b.기준 컬럼;
 
+
+-- 핵심은
+-- A테이블  LEFT JOIN  B테이블
+
+-- 왼쪽이 기준이므로 (left이니까), A테이블이 기준
+
 -- COMMAND ----------
 
 -- DBTITLE 1,Employee 기준으로 Left Join 수행(6개의 행을 가진 employee를 기준으로 이에 매치되는 department까지 출력. 없는 값은 null.)
@@ -249,10 +229,6 @@ SELECT id, name, employee.deptno, deptname
 FROM employee
 left JOIN department
 ON employee.deptno = department.deptno;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
@@ -279,10 +255,6 @@ ON employee.deptno = department.deptno;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC ##### 4. Full (Outer) Join
 -- MAGIC - 일종의 합집합으로 이해하면 쉬움
@@ -300,10 +272,6 @@ FULL JOIN department ON employee.deptno = department.deptno;
 SELECT id, name, department.deptno, deptname
 FROM employee
 FULL JOIN department ON employee.deptno = department.deptno;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
@@ -327,7 +295,7 @@ select * from emp_s;
 
 -- COMMAND ----------
 
--- DBTITLE 1,Untitled
+-- DBTITLE 0,Untitled
 select a.emp_id, a.name as `직원명`, b.name as `직속상관`
 from emp_s as a
 inner join emp_s as b
@@ -336,17 +304,10 @@ on a.direct_supervisor_id = b.emp_id;
 -- COMMAND ----------
 
 -- left join을 이용하여 직속 상관이 없는 홍대표까지 출력해보기
-
--- COMMAND ----------
-
 select a.emp_id, a.name as `직원명`, b.name as `직속상관`
 from emp_s as a
 left join emp_s as b
 on a.direct_supervisor_id = b.emp_id;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
@@ -373,26 +334,30 @@ cross join department;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- MAGIC %md
 -- MAGIC ### 5. Window 함수
 -- MAGIC - window 함수 개요
--- MAGIC - 행과 행간의 관계를 쉽게 정의하는게 목적.
+-- MAGIC - 행과 행간의 관계를 쉽게 정의하는게 목적. (주로 순위, 합계, 평균 등을 조회할 때 사용!!)
 -- MAGIC   - Ranking 함수
 -- MAGIC   - Analytic 함수
 -- MAGIC   - Aggregate 함수
 
 -- COMMAND ----------
 
+-- MAGIC %md
+-- MAGIC ##### 순위매기는 3가지 방법
+-- MAGIC - rank()
+-- MAGIC - dense_rank()
+-- MAGIC - row_number()
+
+-- COMMAND ----------
+
 -- DBTITLE 1,5-1-1. Ranking 함수(rank())
 -- 그룹 내 순위 함수
--- SELECT rank()(value_expr) OVER (PARTITION BY window_partition ORDER BY window_ordering) from table
+-- SELECT rank() OVER (PARTITION BY window_partition ORDER BY window_ordering) from table
 
--- 특정 범위는 partition by로 한정시킬 수 있음.
--- order by로 순위 매길 대상 선정
+-- 특정 범위는 partition by로 한정시킬 수 있음.  (전체 집합을 기준에 의해 소그룹으로 나눌 수 있음 like group by)
+-- order by로 순위 매길 대상 선정 (어떤 항목을 순위 매길 것인가 지정)
 -- 여러개이면 상위가 기준
 
 select ename, deptno, sal,
@@ -432,40 +397,28 @@ from emp;
 -- 이 순위 기준은 없음.
 
 select ename,
-rank() over (order by sal) as ranks,
-dense_rank() over (order by sal) as dens_ranks,
-row_number() over (order by sal) as row_number_ranks
+rank() over (order by sal) as `ranks_1번방법`,
+dense_rank() over (order by sal) as `dens_ranks_2번방법`,
+row_number() over (order by sal) as `row_number_ranks_3번방법`
 from emp
-order by ranks, ename
+order by `ranks_1번방법`, ename
 ;
 
 -- COMMAND ----------
 
-select *,
-rank() over (partition by deptno order by sal) as ranks,
-dense_rank() over (partition by deptno order by sal) as dens_ranks,
-row_number() over (partition by deptno order by sal) as row_number_ranks
+`row_number_ranks_3번방법`select *,
+rank() over (partition by deptno order by sal) as `ranks_1번방법`,
+dense_rank() over (partition by deptno order by sal) as `dens_ranks_2번방법`,
+row_number() over (partition by deptno order by sal) as `row_number_ranks_3번방법`
 from emp
 order by deptno, sal, ename;
 
 -- COMMAND ----------
 
-
-
--- COMMAND ----------
-
 -- DBTITLE 1,5-2-1. Analytic 함수(lead()) 
 -- MAGIC %md
--- MAGIC - lead: 후행 로우값.
--- MAGIC   - 현재 행 뒤에 있는 행의 값을 반환
--- MAGIC - lag
-
--- COMMAND ----------
-
--- lead(expr [, offset [, default] ] )
--- 문서를 보시면 다음처럼 되어 있다.
-
--- expr, offset, default가 뭔지 예제를 통해 확인해보자.
+-- MAGIC - lead: 후행 로우값(현재 행 뒤에 있는 행의 값을 반환(가져옴))
+-- MAGIC - lag: 선행 로우값(현재 행 앞에 있는 행의 값을 반환(가져옴))
 
 -- COMMAND ----------
 
@@ -478,6 +431,7 @@ from emp_w;
 
 -- COMMAND ----------
 
+-- 1행후 값 가져오기
 select *,
 lead(salary, 1) over (partition by dept order by age) as lead_salary
 from emp_w;
@@ -492,50 +446,32 @@ from emp_w;
 
 -- COMMAND ----------
 
+-- 2행후 값 가져오기 + null을 99999로 채우기
 select *,
 lead(salary, 2, 99999) over (partition by dept order by age) as lead_salary
 from emp_w;
 
 -- COMMAND ----------
 
-select name, dept, salary-lead_salary as improved_salary
-from
-(
-select *,
-lead(salary) over (partition by dept order by age) as lead_salary
-from emp_w
-);
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
 -- DBTITLE 1,5-2-1. Analytic 함수(LAG()) - lead와 동일하게 작동하지만 후행이 아닌 선행
+-- 1행전 값 가져오기
 select *,
 lag(salary) over (partition by dept order by age) as lead_salary
 from emp_w;
 
 -- COMMAND ----------
 
+-- 2행전 값 가져오기
 select *,
 lag(salary, 2) over (partition by dept order by age) as lead_salary
 from emp_w;
 
 -- COMMAND ----------
 
+-- 2행전 값 가져오기 + null을 99999로 채우기
 select *,
 lag(salary, 2, 0) over (partition by dept order by age) as lead_salary
 from emp_w;
-
--- COMMAND ----------
-
-
 
 -- COMMAND ----------
 
