@@ -123,24 +123,32 @@ from megazone.aac_intakes
 
 -- COMMAND ----------
 
-select count(name)
+-- select count(name)
+select count(*)
 from megazone.aac_intakes
 where name is null
 
 -- COMMAND ----------
 
+select count(*)
+from megazone.aac_intakes
+where name is not null
+
+-- COMMAND ----------
+
 select name, count(name) as cnt 
 from megazone.aac_intakes
+where name is not null
 group by name
 
 -- COMMAND ----------
 
-select name, count(*) as cnt from megazone.aac_intakes
-where not name is Null
+select name, count(name) as cnt 
+from megazone.aac_intakes
+where name is not Null
 group by name
 having cnt > 1
-order by cnt desc 
-limit 1;
+order by cnt asc;
 
 -- COMMAND ----------
 
