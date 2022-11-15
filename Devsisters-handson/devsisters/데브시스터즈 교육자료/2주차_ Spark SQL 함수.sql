@@ -144,6 +144,11 @@ select * from SAMPLE;
 
 -- COMMAND ----------
 
+-- 파편화된 조각들을 조건에 맞게 합쳐주는 것 = Join
+-- 두 개 이상의 테이블을 연결지어서 데이터를 조회 = Join
+
+-- COMMAND ----------
+
 -- MAGIC %md
 -- MAGIC ### 3-2. Join문이란?
 -- MAGIC ##### 개요
@@ -162,6 +167,16 @@ select * from SAMPLE;
 -- MAGIC ##### 1. Inner Join
 -- MAGIC - 2개의 테이블에서 값이 일치하는 행을 반환.
 -- MAGIC - 즉, 교집합
+
+-- COMMAND ----------
+
+-- 목적에 맞게 정규화(테이블을 분해시키는 것)시켜서 employee, department 테이블을 만들어둠.
+-- 이 두 테이블을 목적에 맞게 join문을 통해 테이블을 연결해 데이터를 조회.
+
+-- COMMAND ----------
+
+-- DBTITLE 1,실습용 테이블 0
+select * from megazone.normalization
 
 -- COMMAND ----------
 
