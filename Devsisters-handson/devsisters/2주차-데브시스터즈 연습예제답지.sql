@@ -16,6 +16,10 @@
 
 -- COMMAND ----------
 
+use megazone;
+
+-- COMMAND ----------
+
 -- MAGIC %md
 -- MAGIC 
 -- MAGIC ### 집계 함수
@@ -28,7 +32,7 @@
 
 -- COMMAND ----------
 
-SELECT MAX(DATETIME) FROM dev.aac_intakes
+SELECT MAX(DATETIME) FROM aac_intakes
 
 -- COMMAND ----------
 
@@ -42,7 +46,7 @@ SELECT MAX(DATETIME) FROM dev.aac_intakes
 
 -- COMMAND ----------
 
-SELECT MIN(DATETIME) FROM dev.aac_intakes
+SELECT MIN(DATETIME) FROM aac_intakes
 
 -- COMMAND ----------
 
@@ -57,7 +61,7 @@ SELECT MIN(DATETIME) FROM dev.aac_intakes
 -- COMMAND ----------
 
 SELECT COUNT(ANIMAL_ID) count
-FROM dev.aac_intakes;
+FROM aac_intakes;
 
 -- COMMAND ----------
 
@@ -74,8 +78,8 @@ FROM dev.aac_intakes;
 -- COMMAND ----------
 
 select b.animal_id, b.name 
-from dev.aac_intakes a
-right join dev.aac_outcomes b
+from aac_intakes a
+right join aac_outcomes b
 on a.animal_id = b.animal_id
 where a.animal_id is null;
 
@@ -94,8 +98,8 @@ where a.animal_id is null;
 -- COMMAND ----------
 
 SELECT B.ANIMAL_ID, B.NAME
-FROM dev.aac_intakes A
-inner JOIN dev.aac_outcomes B
+FROM aac_intakes A
+inner JOIN aac_outcomes B
 ON A.ANIMAL_ID = B.ANIMAL_ID
 WHERE A.DATETIME > B.DATETIME
 ORDER BY A.DATETIME
@@ -115,8 +119,8 @@ ORDER BY A.DATETIME
 -- COMMAND ----------
 
 SELECT A.animal_id, A.DATETIME
-FROM dev.aac_intakes A
-LEFT JOIN dev.aac_outcomes B
+FROM aac_intakes A
+LEFT JOIN aac_outcomes B
 ON A.ANIMAL_ID = B.ANIMAL_ID
 WHERE B.ANIMAL_ID IS NULL
 ORDER BY A.DATETIME
@@ -137,8 +141,8 @@ LIMIT 3;
 -- COMMAND ----------
 
 SELECT A.ANIMAL_ID, A.ANIMAL_TYPE, A.NAME
-FROM dev.aac_intakes A
-JOIN dev.aac_outcomes B
+FROM aac_intakes A
+JOIN aac_outcomes B
 ON A.ANIMAL_ID = B.ANIMAL_ID
 WHERE A.SEX_UPON_INTAKE != B.SEX_UPON_OUTCOME
 ORDER BY ANIMAL_ID
@@ -162,7 +166,7 @@ ORDER BY ANIMAL_ID
 -- COMMAND ----------
 
 select empno, ename, sal 
-from dev.emp
+from emp
 where sal > 
 (
 select sal 

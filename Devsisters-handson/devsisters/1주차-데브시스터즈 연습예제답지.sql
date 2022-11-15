@@ -16,6 +16,7 @@
 
 -- COMMAND ----------
 
+use megazone;
 show tables
 
 -- COMMAND ----------
